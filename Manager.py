@@ -59,7 +59,8 @@ if __name__ == "__main__":
     print HOST + ", " + str(PORT) + ", " + AUTHKEY
     m = Manager(host=HOST, port=PORT, authkey=AUTHKEY, filepfx=BASE_OUT_FILE)
     #p = Producer.Producer()
-    c = []
-    print 'Starting up: ' + str(NUM_CONSUMERS) + ('consumers' if NUM_CONSUMERS > 1 else 'consumer')
-    for i in xrange(NUM_CONSUMERS):
-        c[i] = Consumer.Consumer()
+    #TODO: get better at multiprocessing and make this work so separate Consumers are not needed!
+    #c = []
+    #print 'Starting up: ' + str(NUM_CONSUMERS) + ('consumers' if NUM_CONSUMERS > 1 else 'consumer')
+    #for i in xrange(NUM_CONSUMERS):
+    #    c[i] = Consumer.Consumer()
