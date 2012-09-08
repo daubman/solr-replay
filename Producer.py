@@ -68,10 +68,11 @@ class Producer():
         return int(l[l.rfind('QTime=') + 6:].strip()) #if last
 
     def replace(self, l):
-        if self.replaceterm is not None and self.replacewith is not None:
+        url = self.get_url(l)
+        if self.replaceterm is not None and self.replacewith is not None and self.replaceterm in url:
             print 'replacing: ' + self.replaceterm + ' with: ' + self.replacewith
-            return self.get_url(l).replace(self.replaceterm, self.replacewith, 1)
-        return self.get_url(l)
+            return url.replace(self.replaceterm, self.replacewith, 1)
+        return url
 
 if __name__ == "__main__":
     p = Producer(host=HOST, port=PORT, authkey=AUTHKEY, delmult=DELAY_MULT, filterline=FILTER_LINE, replaceterm=REPLACE_TERM, replacewith=REPLACE_WITH, delinprod=DELAY_IN_PRODUCER)
