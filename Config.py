@@ -17,5 +17,5 @@ FILTER_LINE = 'artistIDs' #Playlist
 #FILTER_LINE = 'qt=/isq' #Artists
 REPLACE_TERM = 'qt=/cfq'
 REPLACE_WITH = 'qt=/grp'
-NUM_CONSUMERS = 2
+NUM_CONSUMERS = 2 #Typically the same or one greater than the number of producers
 DELAY_IN_PRODUCER = True
