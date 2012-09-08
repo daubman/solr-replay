@@ -8,19 +8,18 @@ Requires: urllib3 - https://github.com/shazow/urllib3
 from multiprocessing.managers import BaseManager
 from datetime import datetime
 import time
-import sys
 import json
 import urllib3
-import signal
 from Config import HOST, PORT, AUTHKEY, BASE_URL, DELAY_IN_PRODUCER
 
 __author__ = 'Aaron Daubman <adaubman@echonest.com>'
 __date__ = '9/7/12 3:25 PM'
 
 class Consumer():
-    def __init__(self, host=None, port=None, authkey=None, baseurl=None, name='1', wq=None, rq=None):
+    def __init__(self, host=None, port=None, authkey=None, baseurl=None, name='1', wq=None, rq=None, delinprod=True):
         self.name = name
         self.baseurl = baseurl
+        self.delinprod = delinprod
         self.m = None
         if wq is None or rq is None:
             print 'Initializing Consumer: ' + self.name + ' as BaseManager(address=(' + host + ', ' + str(port) + ', authkey=' + authkey + ') with remote queues'
@@ -44,7 +43,7 @@ class Consumer():
         while self.running:
             try:
                 delay, query, oqt = self.work_queue.get()
-                if not DELAY_IN_PRODUCER:
+                if not self.delinprod:
                     #Delay here if multiple producers
                     if delay > 2: #safeguard with a max delay of 2 seconds...
                         delay = 2
@@ -90,5 +89,5 @@ class Consumer():
 
 
 if __name__ == '__main__':
-    p = Consumer(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL)
+    p = Consumer(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, delinprod=DELAY_IN_PRODUCER)
     p.run()

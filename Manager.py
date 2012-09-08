@@ -7,11 +7,10 @@ Manage the queues, start up consumers on same host if desired
 from multiprocessing.managers import BaseManager
 from multiprocessing import Queue, Process
 from threading import Timer
-from Config import HOST, PORT, AUTHKEY, BASE_OUT_FILE, MANAGER_STARTS_CONSUMERS, STAT_INTERVAL, BASE_URL
+from Config import HOST, PORT, AUTHKEY, BASE_OUT_FILE, MANAGER_STARTS_CONSUMERS, STAT_INTERVAL, BASE_URL, DELAY_IN_PRODUCER
 import contextlib
 import time
 from datetime import datetime
-import sys
 import Consumer
 
 __author__ = 'Aaron Daubman <adaubman@echonest.com>'
@@ -45,7 +44,7 @@ class Manager():
                 try:
                     res = self.result_queue.get()
                     f.write(','.join(map(str, res)) + '\n')
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                 except KeyboardInterrupt:
                     #TODO: no idea how to prevent os.waitpid related exceptions...
                     print '\nKeyboardInterrupt detected in Manager, attempting to exit...'
@@ -83,7 +82,7 @@ def main():
             c = []
             print 'Initializing: ' + str(MANAGER_STARTS_CONSUMERS) + (' Consumers' if MANAGER_STARTS_CONSUMERS > 1 else ' Consumer')
             for i in xrange(MANAGER_STARTS_CONSUMERS):
-                c.append(Consumer.Consumer(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, name=str(i), wq=m.get_wq(), rq=m.get_rq()))
+                c.append(Consumer.Consumer(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, name=str(i), wq=m.get_wq(), rq=m.get_rq(), delinprod=DELAY_IN_PRODUCER))
                 p.append(Process(target=c[i].run, name='Consumer ' + str(i)))
             print 'Starting: ' + str(MANAGER_STARTS_CONSUMERS) + (' Consumers' if MANAGER_STARTS_CONSUMERS > 1 else ' Consumer')
             for i in xrange(1, len(p)):

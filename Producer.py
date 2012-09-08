@@ -15,8 +15,9 @@ __date__ = '9/7/12 3:22 PM'
 
 
 class Producer():
-    def __init__(self, host=None, port=None, authkey=None, delmult=1, filterline='', replaceterm=None, replacewith=None, name='1'):
+    def __init__(self, host=None, port=None, authkey=None, delmult=1, filterline='', replaceterm=None, replacewith=None, name='1', delinprod=True):
         self.name = name
+        self.delinprod = delinprod
         print 'Initializing Producer: ' + self.name
         BaseManager.register('get_work_queue')
         self.m = BaseManager(address=(host, port), authkey=authkey)
@@ -45,7 +46,7 @@ class Producer():
             delay = (td.microseconds + (td.seconds * 1000000.0)) / 1000000
             #Delay in producer if just one producer - closest to real-world,
             #Otherwise, delay in consumer to approximate traffic distribution
-            if DELAY_IN_PRODUCER:
+            if self.delinprod:
                 time.sleep(delay * self.delmult)
             self.queue.put((delay, url, self.get_qt(l)))
             last_ts = ts
@@ -55,7 +56,7 @@ class Producer():
         try:
             return datetime.strptime(l[:l.find(' ')], '%H:%M:%S,%f')
         except ValueError:
-            return None
+            return datetime.now()
 
 
     def get_url(self, l):
@@ -73,5 +74,5 @@ class Producer():
         return self.get_url(l)
 
 if __name__ == "__main__":
-    p = Producer(host=HOST, port=PORT, authkey=AUTHKEY, delmult=DELAY_MULT, filterline=FILTER_LINE, replaceterm=REPLACE_TERM, replacewith=REPLACE_WITH)
+    p = Producer(host=HOST, port=PORT, authkey=AUTHKEY, delmult=DELAY_MULT, filterline=FILTER_LINE, replaceterm=REPLACE_TERM, replacewith=REPLACE_WITH, delinprod=DELAY_IN_PRODUCER)
     p.run()
