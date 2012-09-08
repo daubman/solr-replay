@@ -25,3 +25,10 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Log files
+.log
+
+#IntelliJ
+.idea
+.iml
