@@ -27,8 +27,11 @@ pip-log.txt
 .mr.developer.cfg
 
 #Log files
-.log
+*.log
 
 #IntelliJ
 .idea
-.iml
+*.iml
+
+#CSV Output
+*.csv
