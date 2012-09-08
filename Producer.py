@@ -45,17 +45,17 @@ class Producer():
             last_ts = ts
 
 
-def get_ts(self, l):
-    return datetime.strptime(l[:l.find(' ')], '%H:%M:%S,%f')
+    def get_ts(self, l):
+        return datetime.strptime(l[:l.find(' ')], '%H:%M:%S,%f')
 
 
-def get_url(self, l):
-    return l[l.find('{') + 1:l.find('}')]
+    def get_url(self, l):
+        return l[l.find('{') + 1:l.find('}')]
 
 
-def get_qt(self, l):
-    #return l[l.rfind('QTime=')+6:l.rfind(' ')] #if not last
-    return int(l[l.rfind('QTime=') + 6:].strip()) #if last
+    def get_qt(self, l):
+        #return l[l.rfind('QTime=')+6:l.rfind(' ')] #if not last
+        return int(l[l.rfind('QTime=') + 6:].strip()) #if last
 
 
 if __name__ == "__main__":
