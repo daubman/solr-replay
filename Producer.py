@@ -25,11 +25,13 @@ class Producer():
         self.queue.put((0, self.get_url(l), self.get_qt(l)))
         for l in sys.stdin:
             if filterline not in l or 'status=0' not in l:
+                print 'Ignoring line not matching filter: ' + filterline
                 pass
             ts = self.get_ts(l)
             url = self.get_url(l)
 
             if replaceterm is not None and replacewith is not None:
+                print 'replacing: ' + replaceterm + ' with: ' + replacewith
                 url = self.get_url(l).replace(replaceterm, replacewith, 1)
 
             #we're just looking at a max diff of at most a few seconds here...
@@ -42,15 +44,18 @@ class Producer():
             self.queue.put((delay, url, self.get_qt(l)))
             last_ts = ts
 
-    def get_ts(self, l):
-        return datetime.strptime(l[:l.find(' ')], '%H:%M:%S,%f')
 
-    def get_url(self, l):
-        return l[l.find('{') + 1:l.find('}')]
+def get_ts(self, l):
+    return datetime.strptime(l[:l.find(' ')], '%H:%M:%S,%f')
 
-    def get_qt(self, l):
-        #return l[l.rfind('QTime=')+6:l.rfind(' ')] #if not last
-        return int(l[l.rfind('QTime=') + 6:].strip()) #if last
+
+def get_url(self, l):
+    return l[l.find('{') + 1:l.find('}')]
+
+
+def get_qt(self, l):
+    #return l[l.rfind('QTime=')+6:l.rfind(' ')] #if not last
+    return int(l[l.rfind('QTime=') + 6:].strip()) #if last
 
 
 if __name__ == "__main__":
