@@ -8,7 +8,7 @@ Requires: urllib3 - https://github.com/shazow/urllib3
 from multiprocessing.managers import BaseManager
 from datetime import datetime
 import time
-from Config import HOST, PORT, AUTHKEY, BASE_URL
+from Config import HOST, PORT, AUTHKEY, BASE_URL, DELAY_IN_PRODUCER
 import json
 import urllib3
 
@@ -28,16 +28,16 @@ class Consumer():
         while 1:
             try:
                 delay, query, oqt = self.work_queue.get()
-                #Delay here if multiple producers
-                #if delay > 2: #safeguard with a max delay of 2 seconds...
-                #    delay = 2
-                #time.sleep(delay)
+                if not DELAY_IN_PRODUCER:
+                    #Delay here if multiple producers
+                    if delay > 2: #safeguard with a max delay of 2 seconds...
+                        delay = 2
+                    time.sleep(delay)
                 ts, taken, qt, nf, sz = self.request_url(query, baseurl)
                 #self.result_queue.put('Request time taken: ' + str(taken) + ', QTime: ' + str(qt) + ', numFound: ' + nf + ', Orig QTime: ' + str(oqt))
                 self.result_queue.put((ts, taken, qt, nf, sz, oqt))
             except KeyboardInterrupt:
                 pass
-
 
     def request_url(self, query, baseurl):
         #myreq = urllib3.Request(baseurl)

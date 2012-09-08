@@ -1,12 +1,12 @@
 #!/usr/bin/env python -u
 # -*- coding: utf-8 -*-
 """
-Adds parsed log file info as tuple (delaytime, query) to the centrally managed queue
+Adds parsed log file info as tuple (delaytime, query, origQTime) to the centrally managed queue
 """
 
 from multiprocessing.managers import BaseManager
 from datetime import datetime
-from Config import HOST, PORT, AUTHKEY, DELAY_MULT, FILTER_LINE, REPLACE_TERM, REPLACE_WITH
+from Config import HOST, PORT, AUTHKEY, DELAY_MULT, FILTER_LINE, REPLACE_TERM, REPLACE_WITH, DELAY_IN_PRODUCER
 import sys
 import time
 
@@ -28,14 +28,17 @@ class Producer():
                 pass
             ts = self.get_ts(l)
             url = self.get_url(l)
+
             if replaceterm is not None and replacewith is not None:
                 url = self.get_url(l).replace(replaceterm, replacewith, 1)
+
             #we're just looking at a max diff of at most a few seconds here...
             td = ts - last_ts
             delay = (td.microseconds + (td.seconds * 1000000.0)) / 1000000
             #Delay in producer if just one producer - closest to real-world,
             #Otherwise, delay in consumer to approximate traffic distribution
-            time.sleep(delay * delmult)
+            if DELAY_IN_PRODUCER:
+                time.sleep(delay * delmult)
             self.queue.put((delay, url, self.get_qt(l)))
             last_ts = ts
 

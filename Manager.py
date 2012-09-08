@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Manage the queues
+Manage the queues, start up consumers on same host if desired
 """
 
 from multiprocessing.managers import BaseManager
 from multiprocessing import Queue
 from threading import Timer
-from Config import HOST, PORT, AUTHKEY, BASE_OUT_FILE
+from Config import HOST, PORT, AUTHKEY, BASE_OUT_FILE, NUM_CONSUMERS
 import contextlib
 import time
 from datetime import datetime
@@ -59,4 +59,7 @@ if __name__ == "__main__":
     print HOST + ", " + str(PORT) + ", " + AUTHKEY
     m = Manager(host=HOST, port=PORT, authkey=AUTHKEY, filepfx=BASE_OUT_FILE)
     #p = Producer.Producer()
-    c = Consumer.Consumer()
+    c = []
+    print 'Starting up: ' + str(NUM_CONSUMERS) + ('consumers' if NUM_CONSUMERS > 1 else 'consumer')
+    for i in xrange(NUM_CONSUMERS):
+        c[i] = Consumer.Consumer()
