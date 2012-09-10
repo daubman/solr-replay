@@ -18,7 +18,7 @@ class LogParser():
     def __init__(self, host=None, port=None, authkey=None, delmult=1, filterline='', replaceterm=None, replacewith=None, name='1', delinprod=True):
         self.name = name
         self.delinprod = delinprod
-        print 'Initializing LogParser: ' + self.name
+        print 'Initializing LogParser: ' + self.name + ' as BaseManager(address=(' + host + ', ' + str(port) + ', authkey=' + authkey + ') with remote queues'
         BaseManager.register('get_log_queue')
         self.m = BaseManager(address=(host, port), authkey=authkey)
         self.m.connect()

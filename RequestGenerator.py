@@ -46,7 +46,7 @@ class RequestGenerator():
                 ts, taken, qt, nf, sz = self.request_url(query, self.baseurl)
                 self.result_queue.put((ts, taken, qt, nf, sz, oqt))
             except KeyboardInterrupt:
-                print '\nKeyboardInterrupt detected in Consumer: ' + self.name + ', attempting to exit...'
+                print '\nKeyboardInterrupt detected in RequestGenerator: ' + self.name + ', attempting to exit...'
                 #sys.exc_clear()
                 self.stop()
                 return
