@@ -74,10 +74,16 @@ class Manager():
 
     def print_stats(self):
         while self.running:
-            print 'Log queue full: ' + ('yes' if self.log_queue.full() else 'no') + ', empty: ' + ('yes' if self.log_queue.empty() else 'no') + ' / Work queue full: ' + (
-                'yes' if self.work_queue.full() else 'no') + ', empty: ' + ('yes' if self.work_queue.empty() else 'no') + ' / Result queue full: ' + (
-                'yes' if self.result_queue.full() else 'no') + ', empty: ' + ('yes' if self.result_queue.empty() else 'no')
+            print 'Log queue: ' + self.colored_queue_stat(self.log_queue) + ' / Work queue: ' + self.colored_queue_stat(self.work_queue) + ' / Result queue: ' + self.colored_queue_stat(self.result_queue)
             time.sleep(self.statint)
+
+    def colored_queue_stat(self, q):
+        if q.full():
+            return '\033[1;31mFull\033[0m'
+        elif q.empty():
+            return '\033[1;33mEmpty\033[0m'
+        else:
+            return '\033[1;36mPartial\033[0m'
 
     def stop(self):
         self.running = False

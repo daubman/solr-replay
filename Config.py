@@ -19,6 +19,6 @@ REPLACE_TERM = 'qt=/cfq'
 REPLACE_WITH = 'qt=/grp'
 #REPLACE_TERM = None
 #REPLACE_WITH = None
-MANAGER_STARTS_REQGENS = 4 #Typically the same or one greater than the number of producers, 0 if running distributed Consumers
+MANAGER_STARTS_REQGENS = 3 #Typically the same or one greater than the number of producers, 0 if running distributed Consumers
 DELAY_IN_PRODUCER = False
-STAT_INTERVAL=1
+STAT_INTERVAL=10
