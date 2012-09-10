@@ -15,14 +15,14 @@ from Config import HOST, PORT, AUTHKEY, BASE_URL, DELAY_IN_PRODUCER
 __author__ = 'Aaron Daubman <adaubman@echonest.com>'
 __date__ = '9/7/12 3:25 PM'
 
-class Consumer():
+class RequestGenerator():
     def __init__(self, host=None, port=None, authkey=None, baseurl=None, name='1', wq=None, rq=None, delinprod=True):
         self.name = name
         self.baseurl = baseurl
         self.delinprod = delinprod
         self.m = None
         if wq is None or rq is None:
-            print 'Initializing Consumer: ' + self.name + ' as BaseManager(address=(' + host + ', ' + str(port) + ', authkey=' + authkey + ') with remote queues'
+            print 'Initializing RequestGenerator: ' + self.name + ' as BaseManager(address=(' + host + ', ' + str(port) + ', authkey=' + authkey + ') with remote queues'
             BaseManager.register('get_work_queue')
             BaseManager.register('get_result_queue')
             self.m = BaseManager(address=(host, port), authkey=authkey)
@@ -30,7 +30,7 @@ class Consumer():
             self.work_queue = self.m.get_work_queue()
             self.result_queue = self.m.get_result_queue()
         else:
-            print 'Initializing Consumer: ' + self.name + ' with shared local queues'
+            print 'Initializing RequestGenerator: ' + self.name + ' with shared local queues'
             self.work_queue = wq
             self.result_queue = rq
         self.work_queue.cancel_join_thread()
@@ -42,12 +42,7 @@ class Consumer():
         print 'Running Consumer: ' + self.name
         while self.running:
             try:
-                delay, query, oqt = self.work_queue.get()
-                if not self.delinprod:
-                    #Delay here if multiple producers
-                    if delay > 2: #safeguard with a max delay of 2 seconds...
-                        delay = 2
-                    time.sleep(delay)
+                query, oqt = self.work_queue.get()
                 ts, taken, qt, nf, sz = self.request_url(query, self.baseurl)
                 self.result_queue.put((ts, taken, qt, nf, sz, oqt))
             except KeyboardInterrupt:
@@ -89,5 +84,5 @@ class Consumer():
 
 
 if __name__ == '__main__':
-    p = Consumer(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, delinprod=DELAY_IN_PRODUCER)
+    p = RequestGenerator(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, delinprod=DELAY_IN_PRODUCER)
     p.run()

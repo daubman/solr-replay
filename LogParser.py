@@ -14,15 +14,15 @@ __author__ = 'Aaron Daubman <adaubman@echonest.com>'
 __date__ = '9/7/12 3:22 PM'
 
 
-class Producer():
+class LogParser():
     def __init__(self, host=None, port=None, authkey=None, delmult=1, filterline='', replaceterm=None, replacewith=None, name='1', delinprod=True):
         self.name = name
         self.delinprod = delinprod
-        print 'Initializing Producer: ' + self.name
-        BaseManager.register('get_work_queue')
+        print 'Initializing LogParser: ' + self.name
+        BaseManager.register('get_log_queue')
         self.m = BaseManager(address=(host, port), authkey=authkey)
         self.m.connect()
-        self.queue = self.m.get_work_queue()
+        self.queue = self.m.get_log_queue()
         self.delmult = delmult
         self.filterline = filterline
         self.replaceterm = replaceterm
@@ -75,5 +75,5 @@ class Producer():
         return url
 
 if __name__ == "__main__":
-    p = Producer(host=HOST, port=PORT, authkey=AUTHKEY, delmult=DELAY_MULT, filterline=FILTER_LINE, replaceterm=REPLACE_TERM, replacewith=REPLACE_WITH, delinprod=DELAY_IN_PRODUCER)
+    p = LogParser(host=HOST, port=PORT, authkey=AUTHKEY, delmult=DELAY_MULT, filterline=FILTER_LINE, replaceterm=REPLACE_TERM, replacewith=REPLACE_WITH, delinprod=DELAY_IN_PRODUCER)
     p.run()
