@@ -41,8 +41,8 @@ class Manager():
         if self.statint > 0:
             self.ps = Timer(self.statint, self.print_stats)
             self.ps.start()
-        rt = threading.Thread(target=self.result_writer_thread, args=(self,))
-        lt = threading.Thread(target=self.log_to_work_delay_thread, args=(self,))
+        rt = threading.Thread(target=self.result_writer_thread)
+        lt = threading.Thread(target=self.log_to_work_delay_thread)
         lt.start()
         rt.start()
         rt.join()
@@ -89,7 +89,7 @@ class Manager():
         self.m.shutdown()
 
     def print_stats(self):
-        print 'Work queue full: ' + ('yes' if self.work_queue.full() else 'no') + ', empty: ' + ('yes' if self.work_queue.empty() else 'no') + ' / Result queue full: ' + (
+        print 'Log queue full: ' + ('yes' if self.log_queue.full() else 'no') + ', empty: ' + ('yes' if self.log_queue.empty() else 'no') + 'Work queue full: ' + ('yes' if self.work_queue.full() else 'no') + ', empty: ' + ('yes' if self.work_queue.empty() else 'no') + ' / Result queue full: ' + (
             'yes' if self.result_queue.full() else 'no') + ', empty: ' + ('yes' if self.result_queue.empty() else 'no')
         self.ps = Timer(self.statint, self.print_stats)
         self.ps.start()
