@@ -35,3 +35,4 @@ pip-log.txt
 
 #CSV Output
 *.csv
+*.xlsx
