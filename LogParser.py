@@ -32,26 +32,24 @@ class LogParser():
 
     def run(self):
         print 'Running LogParser: ' + self.name + ' as BaseManager(address=(' + self.host + ', ' + str(self.port) + ', authkey=' + self.authkey + ') with remote queues'
-        l = sys.stdin.readline().expandtabs(1)
-        #filter in your tail/grep, rather than here...
-        #while self.filterline not in l or 'status=0' not in l:
-        #    l = sys.stdin.readline()
-        ts_str = self._find_between(' ', ' ', l)
-        last_ts = datetime.strptime(ts_str, '%H:%M:%S,%f')
+        l = sys.stdin.readline().replace('\t', ' ')
+        last_ts = datetime.strptime(self._find_between(' ', ' ', l), '%H:%M:%S,%f')
         self.queue.put((0, self.get_url(l), self.get_qt(l)))
         for l in sys.stdin:
+            l = l.replace('\t', ' ')
             #filter in your tail/grep, rather than here...
             #if self.filterline not in l or 'status=0' not in l:
             #    print 'Ignoring line not matching filter: ' + self.filterline
             #    continue
+            ts_str = self._find_between(' ', ' ', l)
             try:
-                ts = datetime.strptime(self._find_between(' ', ' ', l), '%H:%M:%S,%f')
+                ts = datetime.strptime(ts_str, '%H:%M:%S,%f')
                 #we're just looking at a max diff of at most a few seconds here...
                 td = ts - last_ts
                 delay = (td.microseconds + (td.seconds * 1000000.0)) / 1000000
                 last_ts = ts
             except ValueError:
-                print 'Could not parse ts: {0}'.format(ts_str)
+                print 'Could not parse ts: "{0}"'.format(ts_str)
                 delay = self.delmult
                 last_ts += datetime.timedelta(seconds=self.delmult)
             #Delay in producer if just one producer - closest to real-world,
