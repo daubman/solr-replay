@@ -32,7 +32,7 @@ class LogParser():
 
     def run(self):
         print 'Running LogParser: ' + self.name + ' as BaseManager(address=(' + self.host + ', ' + str(self.port) + ', authkey=' + self.authkey + ') with remote queues'
-        l = sys.stdin.readline().replace('\t', ' ')
+        l = sys.stdin.readline().expandtabs(1)
         #filter in your tail/grep, rather than here...
         #while self.filterline not in l or 'status=0' not in l:
         #    l = sys.stdin.readline()
