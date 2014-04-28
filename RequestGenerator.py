@@ -71,7 +71,7 @@ class RequestGenerator():
         #    r = json.load(c)
         r = self.http.request('GET', baseurl + query)
         if r.status != 200:
-            print 'Received status: %d for request: %s' % (r.status, query)
+            print 'Received status: {0} for request: {1}\n{2}'.format(r.status, query, r.data)
             raise ValueError
         d = r.data
         td = datetime.now() - req_start
