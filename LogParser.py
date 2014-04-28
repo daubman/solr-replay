@@ -9,6 +9,7 @@ from datetime import datetime
 from Config import HOST, PORT, AUTHKEY, DELAY_MULT, REPLACE_TERM, REPLACE_WITH, DELAY_IN_PRODUCER
 import sys
 import time
+import urllib2
 
 __author__ = 'Aaron Daubman <adaubman@echonest.com>'
 __date__ = '9/7/12 3:22 PM'
@@ -87,6 +88,7 @@ class LogParser():
         params = self._find_between('{', '}', l, end_rfind=True)
         if self.replaceterm is not None and self.replacewith is not None:
             params = params.replace(self.replaceterm, self.replacewith, 1)
+        params = urllib2.quote(params.encode('utf-8'))  # encode and quote, see if this breaks things...
         url = '{0}/{1}?{2}'.format(core, path, params)
         return url
 
