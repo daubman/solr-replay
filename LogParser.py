@@ -87,7 +87,7 @@ class LogParser():
         params = self._find_between('{', '}', l, end_rfind=True)
         if self.replaceterm is not None and self.replacewith is not None:
             params = params.replace(self.replaceterm, self.replacewith, 1)
-        url = '{1}/{2}?{3}'.format(core, path, params)
+        url = '{0}/{1}?{2}'.format(core, path, params)
         return url
 
     def get_qt(self, l):
