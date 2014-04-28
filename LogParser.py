@@ -94,7 +94,7 @@ class LogParser():
         except UnicodeDecodeError:
             print 'Could not utf8 decode params: {0}'.format(params)
             return None
-        url = '{0}/{1}?{2}'.format(core, path, params)
+        url = u'{0}/{1}?{2}'.format(core, path, params)
         return url
 
     def get_qt(self, l):
