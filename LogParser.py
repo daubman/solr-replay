@@ -62,7 +62,8 @@ class LogParser():
 
             #url = self.replace(l)
             url = self.get_url(l)
-
+            if not url:
+                continue
             self.queue.put((delay, url, self.get_qt(l)))
 
     @staticmethod
@@ -88,7 +89,11 @@ class LogParser():
         params = self._find_between('{', '}', l, end_rfind=True)
         if self.replaceterm is not None and self.replacewith is not None:
             params = params.replace(self.replaceterm, self.replacewith, 1)
-        params = params.encode('utf-8')  # encode but don't quote, see if this breaks things...
+        try:
+            params = params.decode('utf-8')  # encode but don't quote, see if this breaks things...
+        except UnicodeDecodeError:
+            print 'Could not utf8 decode params: {0}'.format(params)
+            return None
         url = '{0}/{1}?{2}'.format(core, path, params)
         return url
 
