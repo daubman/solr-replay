@@ -34,8 +34,8 @@ class Manager():
         BaseManager.register('get_work_queue', callable=lambda: self.work_queue)
         BaseManager.register('get_result_queue', callable=lambda: self.result_queue)
         self.m = BaseManager(address=(self.host, self.port), authkey=self.authkey)
-        print 'Initialzed: Manager\'s BaseManager(address=(' + self.host + ', ' + str(self.port) + '), authkey=' + self.authkey + ')'
-        self.m.start() #Need to start here or multiple Process issues silently close the socket
+        print 'Initialized: Manager\'s BaseManager(address=(' + self.host + ', ' + str(self.port) + '), authkey=' + self.authkey + ')'
+        self.m.start()  # Need to start here or multiple Process issues silently close the socket
         self.running = True
         print 'Running Manager (statint=' + str(self.statint) + ')'
         if self.statint > 0:
@@ -67,9 +67,10 @@ class Manager():
             delay, query, oqt = self.log_queue.get()
             if not self.delinprod:
                 #Delay here if multiple producers
-                if delay > 2: #safeguard with a max delay of 2 seconds...
+                if delay > 2:  # safeguard with a max delay of 2 seconds...
                     delay = 2
                 time.sleep(self.delmult * delay)
+            #print 'sending: \'%s\' to work queue after %f delay' % ((query, oqt), self.delmult * delay)
             self.work_queue.put((query, oqt))
 
     def print_stats(self):
@@ -103,13 +104,15 @@ class Manager():
 
 
 def main():
-    m = Manager(host=HOST, port=PORT, authkey=AUTHKEY, filepfx=BASE_OUT_FILE, statint=STAT_INTERVAL, delmult=DELAY_MULT, delinprod=DELAY_IN_PRODUCER)
+    m = Manager(host=HOST, port=PORT, authkey=AUTHKEY, filepfx=BASE_OUT_FILE, statint=STAT_INTERVAL,
+                delmult=DELAY_MULT, delinprod=DELAY_IN_PRODUCER)
     p = [Process(target=m.run, name='Manager')]
     if MANAGER_STARTS_REQGENS > 0:
         c = []
-        print 'Initializing: ' + str(MANAGER_STARTS_REQGENS) + (' RequestGenerator' if MANAGER_STARTS_REQGENS > 1 else ' RequestGenerator')
+        print 'Initializing: ' + str(MANAGER_STARTS_REQGENS) + (' RequestGenerators' if MANAGER_STARTS_REQGENS > 1 else ' RequestGenerator')
         for i in xrange(MANAGER_STARTS_REQGENS):
-            c.append(RequestGenerator.RequestGenerator(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL, name=str(i), wq=m.get_wq(), rq=m.get_rq(),
+            c.append(RequestGenerator.RequestGenerator(host=HOST, port=PORT, authkey=AUTHKEY, baseurl=BASE_URL,
+                                                       name=str(i), wq=m.get_wq(), rq=m.get_rq(),
                                                        delinprod=DELAY_IN_PRODUCER))
             p.append(Process(target=c[i].run, name='RequestGenerator ' + str(i)))
         print 'Starting: ' + str(MANAGER_STARTS_REQGENS) + (' RequestGenerators' if MANAGER_STARTS_REQGENS > 1 else ' RequestGenerator')

@@ -7,18 +7,16 @@ __author__ = 'Aaron Daubman <adaubman@echonest.com>'
 __date__ = '9/7/12 8:07 PM'
 
 PORT = 50000
-HOST = '127.0.0.1'
+#HOST = '127.0.0.1'
+HOST = 'dca-perf-solr01.p.echonest.net'  # Where the manager is running
 AUTHKEY = 'pass'
-BASE_URL = 'http://127.0.0.1:8609/solr/playlist/select' #Playlist
-#BASE_URL = 'http://127.0.0.1:8616/solr/artists/select' #Artist
-BASE_OUT_FILE = 'SolrPerfTestResults_'
-DELAY_MULT = 1 #set to 0 to disable delay, 1 for same delay, <1 for speedup, >1 for slowdown..
-FILTER_LINE = 'artistIDs' #Playlist
-#FILTER_LINE = 'qt=/isq' #Artists
-REPLACE_TERM = 'qt=/cfq'
-REPLACE_WITH = 'qt=/grp'
+BASE_URL = 'http://dca-solr13.p.echonest.net:8502/solr/'
+BASE_OUT_FILE = 'ArtistsPerf_'
+DELAY_MULT = 0.1  # set to 0 to disable delay, 1 for same delay, <1 for speedup, >1 for slowdown..
+REPLACE_TERM = 'wt=python'
+REPLACE_WITH = 'wt=json'
 #REPLACE_TERM = None
 #REPLACE_WITH = None
-MANAGER_STARTS_REQGENS = 3 #Typically the same or one greater than the number of producers, 0 if running distributed Consumers
+MANAGER_STARTS_REQGENS = 20  # Typically the same or one greater than the number of producers, 0 if running distributed Consumers
 DELAY_IN_PRODUCER = False
-STAT_INTERVAL=10
+STAT_INTERVAL = 1

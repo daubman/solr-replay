@@ -33,17 +33,20 @@ class RequestGenerator():
             print 'Initializing RequestGenerator: ' + self.name + ' with shared local queues'
             self.work_queue = wq
             self.result_queue = rq
-        self.work_queue.cancel_join_thread()
-        self.result_queue.cancel_join_thread()
+        #self.work_queue.cancel_join_thread()
+        #self.result_queue.cancel_join_thread()
         self.http = urllib3.PoolManager()
 
     def run(self):
         self.running = True
-        print 'Running Consumer: ' + self.name
+        print 'Running RequestGenerator: ' + self.name
         while self.running:
             try:
                 query, oqt = self.work_queue.get()
-                ts, taken, qt, nf, sz = self.request_url(query, self.baseurl)
+                try:
+                    ts, taken, qt, nf, sz = self.request_url(query, self.baseurl)
+                except ValueError:
+                    continue
                 self.result_queue.put((ts, taken, qt, nf, sz, oqt))
             except KeyboardInterrupt:
                 print '\nKeyboardInterrupt detected in RequestGenerator: ' + self.name + ', attempting to exit...'
@@ -55,8 +58,8 @@ class RequestGenerator():
         self.running = False
         #self.work_queue.close()
         #self.result_queue.close()
-        if self.m is not None:
-            self.m.shutdown()
+        #if self.m is not None:
+        #    self.m.shutdown()
 
 
     def request_url(self, query, baseurl):
@@ -67,6 +70,9 @@ class RequestGenerator():
         #with contextlib.closing(urllib2.urlopen(myreq)) as c:
         #    r = json.load(c)
         r = self.http.request('GET', baseurl + '?' + query)
+        if r.status != 200:
+            print 'Received status: %d for request: %s' % (r.status, query)
+            raise ValueError
         d = r.data
         td = datetime.now() - req_start
         taken = int(round((td.microseconds + (td.seconds * 1000000.0)) / 1000))

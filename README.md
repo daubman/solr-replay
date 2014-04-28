@@ -20,3 +20,13 @@ You should get a file SolrPerfTestResults_*.csv wherever you ran Manager.py that
 * numFound is parsed out of the JSON response from the Solr server
 * ResponseLen is just the str-len of the full response (approximating size to determine correlation between size and time increase)
 * OrigQTime is the QTime of the original request on the source solr server (from the log) - useful to compare sometimes...
+
+An Example:
+On the source (prod) solr host:
+$ tail -F /var/log/echonest/solr/artists/artists_solr.log | grep 'status=0' | ./LogParser.py
+
+On the dest (SUT) solr host:
+$ ./Manager.py
+
+To see the raw difference in QTimes (QTime - OrigQTime):
+$  tail -F $(ls -t *.csv | head -1) | awk -F',' '{print $3-$6;}'
