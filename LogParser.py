@@ -88,7 +88,7 @@ class LogParser():
         params = self._find_between('{', '}', l, end_rfind=True)
         if self.replaceterm is not None and self.replacewith is not None:
             params = params.replace(self.replaceterm, self.replacewith, 1)
-        params = urllib2.quote(params.encode('utf-8'))  # encode and quote, see if this breaks things...
+        params = params.encode('utf-8')  # encode but don't quote, see if this breaks things...
         url = '{0}/{1}?{2}'.format(core, path, params)
         return url
 
