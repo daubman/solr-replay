@@ -36,7 +36,8 @@ class LogParser():
         #filter in your tail/grep, rather than here...
         #while self.filterline not in l or 'status=0' not in l:
         #    l = sys.stdin.readline()
-        last_ts = datetime.strptime(self._find_between(' ', ' ', l), '%H:%M:%S,%f')
+        ts_str = self._find_between(' ', ' ', l)
+        last_ts = datetime.strptime(ts_str, '%H:%M:%S,%f')
         self.queue.put((0, self.get_url(l), self.get_qt(l)))
         for l in sys.stdin:
             #filter in your tail/grep, rather than here...
@@ -50,8 +51,9 @@ class LogParser():
                 delay = (td.microseconds + (td.seconds * 1000000.0)) / 1000000
                 last_ts = ts
             except ValueError:
+                print 'Could not parse ts: {0}'.format(ts_str)
                 delay = self.delmult
-                last_ts += self.delmult
+                last_ts += datetime.timedelta(seconds=self.delmult)
             #Delay in producer if just one producer - closest to real-world,
             #Otherwise, delay in consumer to approximate traffic distribution
             if self.delinprod:
