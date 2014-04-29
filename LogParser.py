@@ -85,14 +85,18 @@ class LogParser():
         core = self._find_between('[', ']', l)
         # Just assume solr, that's all that is handled right now:
         # webapp = self._find_between('webapp=/', ' ', l)
-        path = self._find_between('path=/', ' ', l)
-        params = self._find_between('{', '}', l, end_rfind=True)
+        try:
+            path = self._find_between('path=/', ' ', l)
+            params = self._find_between('{', '}', l, end_rfind=True)
+        except ValueError:
+            print 'Could not find path or params in:\n"{0}"\n'.format(l)
+            return None
         if self.replaceterm is not None and self.replacewith is not None:
             params = params.replace(self.replaceterm, self.replacewith, 1)
         try:
             params = params.decode('utf-8')  # encode but don't quote, see if this breaks things...
         except UnicodeDecodeError:
-            print 'Could not utf8 decode params: {0}'.format(params)
+            print 'Could not utf8 decode params: "{0}"'.format(params)
             return None
         url = u'{0}/{1}?{2}'.format(core, path, params)
         return url
